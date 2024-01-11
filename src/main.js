@@ -18,9 +18,10 @@ const lightbox = new SimpleLightbox(".gallery a", {
 });
 
 const API_KEY = "41671607-e33db59ab0332d081087354c8";
-const API_URL = `https://pixabay.com/api/?key=${API_KEY}`;
+const API_URL = "https://pixabay.com/api/?";
 
 const reqParams = {
+  key: API_KEY,
   orientation: "horizontal",
   image_type: "photo",
   safesearch: true,
