@@ -10,9 +10,9 @@
     
     <title>Goit-js-hw-11</title>
     <script type="module" crossorigin src="/goit-js-hw-12/commonHelpers.js"></script>
-    <link rel="modulepreload" crossorigin href="/goit-js-hw-12/assets/vendor-46aac873.js">
+    <link rel="modulepreload" crossorigin href="/goit-js-hw-12/assets/vendor-89feecc5.js">
     <link rel="stylesheet" href="/goit-js-hw-12/assets/vendor-eb6030bc.css">
-    <link rel="stylesheet" href="/goit-js-hw-12/assets/index-2bbc2bab.css">
+    <link rel="stylesheet" href="/goit-js-hw-12/assets/index-775078a6.css">
   </head>
   <body>
     <div class="container">
@@ -24,10 +24,16 @@
     placeholder="Search images..."
     required
   />
-  <button class="submit-btn" type="submit">Search</button>
+  <button class="btn-action" type="submit">Search</button>
 </form>
-<div class="loader"></div>
+
+<div class="loader" data-loader="search"></div>
 <ul class="gallery"></ul>
+
+<button class="btn-action btn-pagination" type="button" data-pagination>Load more</button>
+<div class="loader" data-loader="pagination"></div>
+<div class="nomore-msg">We're sorry, but you've reached the end of search results.</div>
+
 
     </div>
     
