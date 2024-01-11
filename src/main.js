@@ -2,7 +2,7 @@ import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import axios from 'axios';
+import axios from "axios";
 
 iziToast.settings({
   position: "topRight",
@@ -33,12 +33,12 @@ const reqParams = {
 const form = document.querySelector(".search-form");
 const loader = document.querySelector("div[data-loader='search']");
 const gallery = document.querySelector(".gallery");
-const btnPagination = document.querySelector("button[data-pagination");
-const loaderPagination = document.querySelector("div[data-loader='pagination']");
-const nomoreMsg = document.querySelector(".nomore-msg");
+const loadMoreBtn = document.querySelector("button[data-pagination");
+const loadMoreLoader = document.querySelector("div[data-loader='pagination']");
+const goUpBtn = document.querySelector("button[data-goup");
 
-btnPagination.addEventListener("click", onPagination);
-
+goUpBtn.addEventListener("click", () => window.scrollTo({top:  0, behavior: 'smooth'}));
+loadMoreBtn.addEventListener("click", onPagination);
 form.addEventListener("submit", onSearch);
 
 function onSearch(e) {
@@ -51,10 +51,10 @@ function onSearch(e) {
     return;
   }
 
-  gallery.textContent = "";
+  gallery.innerHTML = "";
   loader.style.display = "block";
-  btnPagination.style.display = "none";
-  nomoreMsg.style.display = "none";
+  loadMoreBtn.style.display = "none";
+  goUpBtn.style.display = "none";
 
   reqParams.q = searchStr;
   reqParams.page = 1;
@@ -63,7 +63,7 @@ function onSearch(e) {
 }
 
 function onPagination() {
-  loaderPagination.style.display = "block";
+  loadMoreLoader.style.display = "block";
   performAPI(reqParams);
 }
 
@@ -80,21 +80,24 @@ async function performAPI(params) {
     performPagination(images.totalHits);
 
   } catch (error) {
+    loader.style.display = "none";
+    loadMoreLoader.style.display = "none";
     iziToast.error({ message: `Api request error: ${error}` })
   }
 }
 
 function performPagination(imgCount) {
   if (imgCount <= reqParams.per_page * reqParams.page) {
-    btnPagination.style.display = "none";
-    nomoreMsg.style.display = "block";
+    loadMoreBtn.style.display = "none";
+    goUpBtn.style.display = "block";
+    iziToast.warning({ message: "We're sorry, but you've reached the end of search results." });
+
   } else {
     reqParams.page += 1;
-    btnPagination.style.display = "block";
-    nomoreMsg.style.display = "none";
+    loadMoreBtn.style.display = "block";
   }
   loader.style.display = "none";
-  loaderPagination.style.display = "none";
+  loadMoreLoader.style.display = "none";
 
   if (reqParams.page > 2) {
     const elHeight = gallery.children[0].getBoundingClientRect().height;

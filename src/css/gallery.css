@@ -126,6 +126,9 @@
 .btn-pagination {
   display: none;
 }
+.btn-goup {
+  display: none;
+}
 .nomore-msg {
   display: none;
 }
