@@ -80,9 +80,10 @@ async function performAPI(params) {
     performPagination(images.totalHits);
 
   } catch (error) {
+    iziToast.error({ message: `Api request error: ${error}` })
+  } finally {
     loader.style.display = "none";
     loadMoreLoader.style.display = "none";
-    iziToast.error({ message: `Api request error: ${error}` })
   }
 }
 
@@ -96,8 +97,6 @@ function performPagination(imgCount) {
     reqParams.page += 1;
     loadMoreBtn.style.display = "block";
   }
-  loader.style.display = "none";
-  loadMoreLoader.style.display = "none";
 
   if (reqParams.page > 2) {
     const elHeight = gallery.children[0].getBoundingClientRect().height;
