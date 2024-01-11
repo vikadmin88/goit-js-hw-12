@@ -6,7 +6,13 @@
     placeholder="Search images..."
     required
   />
-  <button class="submit-btn" type="submit">Search</button>
+  <button class="btn-action" type="submit">Search</button>
 </form>
-<div class="loader"></div>
+
+<div class="loader" data-loader="search"></div>
 <ul class="gallery"></ul>
+
+<button class="btn-action btn-pagination" type="button" data-pagination>Load more</button>
+<div class="loader" data-loader="pagination"></div>
+<div class="nomore-msg">We're sorry, but you've reached the end of search results.</div>
+

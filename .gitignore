@@ -1,4 +1,5 @@
 # Logs
+vik-*
 logs
 *.log
 npm-debug.log*

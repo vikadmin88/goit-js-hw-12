@@ -2,6 +2,7 @@ import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import axios from 'axios';
 
 iziToast.settings({
   position: "topRight",
@@ -11,66 +12,93 @@ iziToast.settings({
   transitionOut: "flipOutX"
 });
 
-const apiUrl = "https://pixabay.com/api/";
-const apiKey = "41671607-e33db59ab0332d081087354c8";
-
-const form = document.querySelector(".search-form");
-const loader = document.querySelector(".loader");
-const gallery = document.querySelector(".gallery");
-
 const lightbox = new SimpleLightbox(".gallery a", {
   captionsData: "alt",
   captionDelay: 250,
 });
 
-form.addEventListener("submit", doApiRequest);
+const API_KEY = "41671607-e33db59ab0332d081087354c8";
+const API_URL = `https://pixabay.com/api/?key=${API_KEY}`;
 
-function doApiRequest(e) {
+const reqParams = {
+  orientation: "horizontal",
+  image_type: "photo",
+  safesearch: true,
+  per_page: 40,
+  page: 1,
+  q: ""
+};
+
+const form = document.querySelector(".search-form");
+const loader = document.querySelector("div[data-loader='search']");
+const gallery = document.querySelector(".gallery");
+const btnPagination = document.querySelector("button[data-pagination");
+const loaderPagination = document.querySelector("div[data-loader='pagination']");
+const nomoreMsg = document.querySelector(".nomore-msg");
+
+btnPagination.addEventListener("click", onPagination);
+
+form.addEventListener("submit", onSearch);
+
+function onSearch(e) {
   e.preventDefault();
 
   const searchStr = form.elements.searchStr.value.trim();
   if (!searchStr) {
     form.reset();
-    iziToast.error({message: "The search field cannot be empty!"});
+    iziToast.error({ message: "Search field cannot be empty!" });
     return;
   }
 
-  gallery.innerHTML = "";
+  gallery.textContent = "";
   loader.style.display = "block";
+  btnPagination.style.display = "none";
+  nomoreMsg.style.display = "none";
 
-  const reqParams = new URLSearchParams({
-    key: apiKey,
-    image_type: "photo",
-    orientation: "horizontal",
-    safesearch: true,
-    per_page: 30,
-    q: searchStr
-  });
+  reqParams.q = searchStr;
+  reqParams.page = 1;
+  performAPI(reqParams)
+  form.reset();
+}
 
+function onPagination() {
+  loaderPagination.style.display = "block";
+  performAPI(reqParams);
+}
 
-  fetch(`${apiUrl}?${reqParams}`)
+async function performAPI(params) {
+  try {
+    const response = await axios.get(API_URL, { params });
+    const images = response.data;
 
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(response.status);
-      }
-      return response.json();
-    })
+    if (images.hits.length == 0) {
+      iziToast.warning({ message: "Sorry, there are no images matching<br> your search query.Please try again!" });
+      return;
+    }
+    updateGalleryMarkup(images.hits);
+    performPagination(images.totalHits);
 
-    .then((imagesObj) => {
-      loader.style.display = "none";
-      if (imagesObj.hits.length == 0) {
-        iziToast.warning({message: "Sorry, there are no images matching<br> your search query.Please try again!"});
-        return;
-      }
-      updateGalleryMarkup(imagesObj.hits);
-    })
+  } catch (error) {
+    iziToast.error({ message: `Api request error: ${error}` })
+  }
+}
 
-    .catch((error) => iziToast.error({message: `Api request error: ${error}`}))
+function performPagination(imgCount) {
+  if (imgCount <= reqParams.per_page * reqParams.page) {
+    btnPagination.style.display = "none";
+    nomoreMsg.style.display = "block";
+  } else {
+    reqParams.page += 1;
+    btnPagination.style.display = "block";
+    nomoreMsg.style.display = "none";
+  }
+  loader.style.display = "none";
+  loaderPagination.style.display = "none";
 
-    .finally(() => {
-      form.reset();
-    });
+  if (reqParams.page > 2) {
+    const elHeight = gallery.children[0].getBoundingClientRect().height;
+    window.scrollBy({ left:0, top: elHeight * 2 + 20, behavior: 'smooth'});
+  }
 }
 
 function updateGalleryMarkup(images) {
@@ -90,26 +118,29 @@ const fillGalleryCard = ({
   return `
     <li class="gallery-item">
       <a class="gallery-link" href="${largeImageURL}">
-        <img class="gallery-image" src="${webformatURL}" alt="${tags}" />
-        <ul class="metabox-list">
-          <li class="mbox-info">
-            <p class="mbox-info-title">Likes</p>
-            <span class="mbox-info-descr">${likes}</span>
-          </li>
-          <li class="mbox-info">
-            <p class="mbox-info-title">Views</p>
-            <span class="mbox-info-descr">${views}</span>
-          </li>
-          <li class="mbox-info">
-            <p class="mbox-info-title">Comments</p>
-            <span class="mbox-info-descr">${comments}</span>
-          </li>
-          <li class="mbox-info">
-            <p class="mbox-info-title">Downloads</p>
-            <span class="mbox-info-descr">${downloads}</span>
-          </li>
-        </ul>
+        <div class="item-wrap">
+          <div class="image-wrap">
+            <img class="gallery-image" src="${webformatURL}" alt="${tags}" />
+          </div>
+          <ul class="metabox-list">
+            <li class="mbox-info">
+              <p class="mbox-info-title">Likes</p>
+              <span class="mbox-info-descr">${likes}</span>
+            </li>
+            <li class="mbox-info">
+              <p class="mbox-info-title">Views</p>
+              <span class="mbox-info-descr">${views}</span>
+            </li>
+            <li class="mbox-info">
+              <p class="mbox-info-title">Comments</p>
+              <span class="mbox-info-descr">${comments}</span>
+            </li>
+            <li class="mbox-info">
+              <p class="mbox-info-title">Downloads</p>
+              <span class="mbox-info-descr">${downloads}</span>
+            </li>
+          </ul>
+        </div>
       </a>
     </li>`;
 };
-
