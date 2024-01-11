@@ -35,7 +35,7 @@ const loader = document.querySelector("div[data-loader='search']");
 const gallery = document.querySelector(".gallery");
 const loadMoreBtn = document.querySelector("button[data-pagination");
 const loadMoreLoader = document.querySelector("div[data-loader='pagination']");
-const goUpBtn = document.querySelector("button[data-goup");
+const goUpBtn = document.querySelector("button[data-goup]");
 
 goUpBtn.addEventListener("click", () => window.scrollTo({top:  0, behavior: 'smooth'}));
 loadMoreBtn.addEventListener("click", onPagination);
