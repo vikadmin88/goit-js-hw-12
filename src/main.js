@@ -97,7 +97,7 @@ function performPagination(imgCount) {
 
   if (reqParams.page > 2) {
     const elHeight = gallery.children[0].getBoundingClientRect().height;
-    window.scrollBy({ left:0, top: elHeight * 2 + 20, behavior: 'smooth'});
+    window.scrollBy({ left:0, top: elHeight * 2 + 12, behavior: 'smooth'});
   }
 }
 
