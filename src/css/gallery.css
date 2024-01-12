@@ -89,6 +89,7 @@
   margin-bottom: 24px
 }
 .gallery-item {
+  overflow: hidden;
   border-radius: 4px;
   border: 1px solid #808080;
   max-width: 360px;
@@ -100,7 +101,7 @@
 }
 .image-wrap {
   display: flex;
-  width: 360px;
+  width: 358px;
   height: 200px;
 }
 .gallery-image {
