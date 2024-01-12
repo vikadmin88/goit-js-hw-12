@@ -33,37 +33,37 @@ const reqParams = {
 const form = document.querySelector(".search-form");
 const loader = document.querySelector("div[data-loader='search']");
 const gallery = document.querySelector(".gallery");
-const loadMoreBtn = document.querySelector("button[data-pagination");
-const loadMoreLoader = document.querySelector("div[data-loader='pagination']");
-const goUpBtn = document.querySelector("button[data-goup]");
+const btnLoadMore = document.querySelector("button[data-pagination");
+const loaderLoadMore = document.querySelector("div[data-loader='pagination']");
+const btnGoUp = document.querySelector("button[data-goup]");
 
-goUpBtn.addEventListener("click", () => window.scrollTo({top:  0, behavior: 'smooth'}));
-loadMoreBtn.addEventListener("click", onPagination);
 form.addEventListener("submit", onSearch);
+btnLoadMore.addEventListener("click", onPagination);
+btnGoUp.addEventListener("click", () => window.scrollTo({top:  0, behavior: 'smooth'}));
 
 function onSearch(e) {
   e.preventDefault();
 
   const searchStr = form.elements.searchStr.value.trim();
+  form.reset();
+
   if (!searchStr) {
-    form.reset();
     iziToast.error({ message: "Search field cannot be empty!" });
     return;
   }
 
   gallery.innerHTML = "";
   loader.style.display = "block";
-  loadMoreBtn.style.display = "none";
-  goUpBtn.style.display = "none";
+  btnLoadMore.style.display = "none";
+  btnGoUp.style.display = "none";
 
   reqParams.q = searchStr;
   reqParams.page = 1;
   performAPI(reqParams)
-  form.reset();
 }
 
 function onPagination() {
-  loadMoreLoader.style.display = "block";
+  loaderLoadMore.style.display = "block";
   performAPI(reqParams);
 }
 
@@ -81,21 +81,22 @@ async function performAPI(params) {
 
   } catch (error) {
     iziToast.error({ message: `Api request error: ${error}` })
+
   } finally {
     loader.style.display = "none";
-    loadMoreLoader.style.display = "none";
+    loaderLoadMore.style.display = "none";
   }
 }
 
 function performPagination(imgCount) {
   if (imgCount <= reqParams.per_page * reqParams.page) {
-    loadMoreBtn.style.display = "none";
-    goUpBtn.style.display = "block";
+    btnLoadMore.style.display = "none";
+    btnGoUp.style.display = "block";
     iziToast.warning({ message: "We're sorry, but you've reached the end of search results." });
 
   } else {
     reqParams.page += 1;
-    loadMoreBtn.style.display = "block";
+    btnLoadMore.style.display = "block";
   }
 
   if (reqParams.page > 2) {

@@ -42,7 +42,7 @@
 }
 .input-text {
   color: #2E2F42;
-  font-family: Montserrat;
+  font-family: inherit;
   font-size: 16px;
   line-height: 1.5; /* 150% */
   letter-spacing: 0.04em;
@@ -67,7 +67,7 @@
 .btn-action {
   align-items: center;
   color: #FFF;
-  font-family: Montserrat;
+  font-family: inherit;
   font-size: 16px;
   font-weight: 500;
   line-height: 1.5; /* 150% */
