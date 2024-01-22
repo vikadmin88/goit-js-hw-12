@@ -33,7 +33,7 @@ const reqParams = {
 const form = document.querySelector(".search-form");
 const loader = document.querySelector("div[data-loader='search']");
 const gallery = document.querySelector(".gallery");
-const btnLoadMore = document.querySelector("button[data-pagination");
+const btnLoadMore = document.querySelector("button[data-pagination]");
 const loaderLoadMore = document.querySelector("div[data-loader='pagination']");
 const btnGoUp = document.querySelector("button[data-goup]");
 
@@ -69,8 +69,8 @@ function onPagination() {
 
 async function performAPI(params) {
   try {
-    const response = await axios.get(API_URL, { params });
-    const images = response.data;
+    const images = await axios.get(API_URL, { params })
+          .then(({ data }) => data);
 
     if (images.hits.length == 0) {
       iziToast.warning({ message: "Sorry, there are no images matching<br> your search query.Please try again!" });
